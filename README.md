@@ -1,5 +1,5 @@
 # EarthBotRangers
-EarthBotRangers: discord bot for looking up cards for Earthborne Rangers.ù
+EarthBotRangers: discord bot for looking up cards for Earthborne Rangers.
 
 Invite link: https://bit.ly/EarthBotRangers
 
