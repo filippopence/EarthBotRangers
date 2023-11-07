@@ -72,13 +72,14 @@ async def erguess(ctx):
     "<i>": "_", 
     "</i>": "_", 
     data[i]['name']: "This Card", 
-    "[": "<:", 
-    "harm]": "harm:1081588151530819644>",
-    "progress]": "progress:1081588156509462640>",
-    "reason]": "reason:1081588160779255938>",
-    "exploration]": "exploration:1081588142093635644>",
-    "connection]": "connection:1081588137987424286>",
-    "conflict]": "conflict:1081588168807153726>"
+    #"[": "<:", 
+    "[harm]": "<:harm:1081588151530819644>",
+    "[progress]": "<:progress:1081588156509462640>",
+    "[reason]": "<:reason:1081588160779255938>",
+    "[exploration]": "<:exploration:1081588142093635644>",
+    "[connection]": "<:connection:1081588137987424286>",
+    "[conflict]": "<:conflict:1081588168807153726>",
+    "[ranger]": "<:ranger:1081588158849880169>"
     } 
     embed = discord.Embed(title = "What's the card?", description = "Guess the card name typing `is <query>`", color= discord.Color.green(), timestamp = ctx.message.created_at)
     
@@ -456,12 +457,16 @@ async def erde(ctx, card=None):
                 pass              
 
 # CARD OF THE DAY
-WHEN = datetime.time(12, 0, 5)   # set time here in UTC 
+WHEN = datetime.time(13, 0, 5)   # set time here in UTC 
 CHANNEL_ID = 1161012075460571167 # Put your channel id here
 
 @tasks.loop(time=WHEN) 
 async def card_of_the_day():
     channel = client.get_channel(CHANNEL_ID)
+    pinned_messages = await channel.pins()
+    for message in pinned_messages:
+        await message.unpin()
+        print(f"Unpinned message content: {message.content}")
     i = random.randint(1,len(CardListDay))
     await channel.send("**Card of the day!**")
     card = await channel.send(CardListDay[i]['imagesrc'])
@@ -469,6 +474,7 @@ async def card_of_the_day():
     time.sleep(0.5)
     for emoji in emojis:
         await card.add_reaction(emoji)
+    await card.pin()
 
 @client.event
 async def on_ready():
@@ -479,6 +485,10 @@ async def on_ready():
 @commands.has_role(869589665043349504)  # ONLY USERS WITH THIS ROLE CAN USE THIS COMMAND
 async def erday(ctx):
     channel = client.get_channel(CHANNEL_ID)
+    pinned_messages = await channel.pins()
+    for message in pinned_messages:
+        await message.unpin()
+        print(f"Unpinned message content: {message.content}")
     i = random.randint(1,len(CardListDay))
     await channel.send("**Card of the day!**")
     card = await channel.send(CardListDay[i]['imagesrc'])
@@ -486,8 +496,7 @@ async def erday(ctx):
     time.sleep(0.5)
     for emoji in emojis:
         await card.add_reaction(emoji)
-
-
+    await card.pin()
 
 load_dotenv(find_dotenv())
 client.run(os.getenv('TOKEN'))
