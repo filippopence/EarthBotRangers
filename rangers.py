@@ -287,8 +287,8 @@ async def erguess(ctx):
 async def erimg(ctx, card=None):
     message = ctx.message.content.split(' ')
     message.pop(0)
-    cc = message
     message = " ".join(message)
+    cc = message
     card = unidecode(message).upper()
     print(f"Looking for: {card}")
     def search(card_list, string):
@@ -345,8 +345,8 @@ async def erimg(ctx, card=None):
 async def erit(ctx, card=None):
     message = ctx.message.content.split(' ')
     message.pop(0)
-    cc = message
     message = " ".join(message)
+    cc = message
     card = unidecode(message).upper()
     print(f"Looking for: {card}")
     def search(card_list, string):
@@ -403,8 +403,8 @@ async def erit(ctx, card=None):
 async def erde(ctx, card=None):
     message = ctx.message.content.split(' ')
     message.pop(0)
-    cc = message
     message = " ".join(message)
+    cc = message
     card = unidecode(message).upper()
     print(f"Looking for: {card}")
     def search(card_list, string):
