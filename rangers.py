@@ -125,7 +125,7 @@ async def erguess(ctx):
         test_icon = test_icon.replace("'", '')
         embed.add_field(name= "Test icons", value= test_icon)
         embed.add_field(name = "Text", value = replace_all(data[i]['text'], dict_guess))
-        embed.add_field(name = "Flavor", value = data[i]['flavor'])
+        embed.add_field(name = "Flavor", value = f"_{data[i]['flavor']}_")
         embed.add_field(name = "Box", value = data[i]['pack_name'])
         embed.add_field(name = "Set", value = f"{data[i]['set']} - {data[i]['position']}")
         embed.add_field(name= "Attribute requirement", value= f"{data[i]['sphere_cost']} **{data[i]['sphere_name']}**")
