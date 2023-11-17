@@ -79,22 +79,27 @@ if not os.path.exists(data_file_path):
     with open(data_file_path, 'w') as f:
         json.dump({}, f)
 
-badge_list0 = ['All Out Of Options',
+
+
+badge_list_of_list = [['All Out Of Options',
               'Big Tech',
               'Electric Slide',
-              'Enough Already']
-badge_list1 = ['Hard Pass',
+              'Enough Already'],
+            ['Hard Pass',
               "Howd That Get in There",
               'Long Flume',
-              'No Stone Unturned']
-badge_list2 = ['Noodling',
+              'No Stone Unturned'],
+            ['Noodling',
               'People Person',
               'Pro Gamer',
-              'Shes A Natural']
-badge_list3 = ['Ship of Theseus',
+              'Shes A Natural'],
+            ['Ship of Theseus',
               'The Pentaverate',
               'Unlimited Power',
-              'Unplanned Reunion']
+              'Unplanned Reunion']]
+
+
+
 
 class MySelectView(discord.ui.View):
     def __init__(self):
@@ -104,20 +109,20 @@ class MySelectView(discord.ui.View):
         options=[
         discord.SelectOption(label='All Out Of Options', emoji='<:All_Out_Of_Options:1174349162112888882>', description="Have only four cards remaining in the challenge deck."),
         discord.SelectOption(label='Big Tech', emoji='<:Big_Tech:1174349163627032636>', description="Discard a gear with 10 or more tokens on it using Moment of Desperation."),
-        discord.SelectOption(label='Electric Slide', emoji='<:Electric_Slide:1174349165799682048>', description="Discard"),
-        discord.SelectOption(label='Enough Already', emoji='<:Enough_Already:1174349167364157532>', description="Discard"),
-        discord.SelectOption(label='Hard Pass', emoji='<:Hard_Pass:1174349170971246653>', description="Discard"),
-        discord.SelectOption(label="Howd That Get in There", emoji='<:Howd_That_Get_in_There:1174349173764665466>', description="Discard"),
-        discord.SelectOption(label='Long Flume', emoji='<:Log_Flume:1174349175169745018>', description="Discard"),
-        discord.SelectOption(label='No Stone Unturned', emoji='<:No_Stone_Unturned:1174349176654528603>', description="Discard"),
-        discord.SelectOption(label='Noodling', emoji='<:Noodling:1174349183344463952>', description="Discard"),
-        discord.SelectOption(label='People Person', emoji='<:People_Person:1174349187014471730>', description="Discard"),
-        discord.SelectOption(label='Pro Gamer', emoji='<:Pro_Gamer:1174349188490854500>', description="Discard"),
-        discord.SelectOption(label='Shes A Natural', emoji='<:Shes_A_Natural:1174349191435264111>', description="Discard"),
-        discord.SelectOption(label='Ship of Theseus', emoji='<:Ship_of_Theseus:1174349534701309982>', description="Discard"),
-        discord.SelectOption(label='The Pentaverate', emoji='<:The_Pentaverate:1174349537700220978>', description="Discard"),
-        discord.SelectOption(label='Unlimited Power', emoji='<:Unlimited_Power:1174349540267151483>', description="Discard"),
-        discord.SelectOption(label='Unplanned Reunion', emoji='<:Unplanned_Reunion:1174349545304494151>', description="Discard")
+        discord.SelectOption(label='Electric Slide', emoji='<:Electric_Slide:1174349165799682048>', description="Complete the campaign using the Electric Fog weather every day."),
+        discord.SelectOption(label='Enough Already', emoji='<:Enough_Already:1174349167364157532>', description="Play the same moment 10 times in one day."),
+        discord.SelectOption(label='Hard Pass', emoji='<:Hard_Pass:1174349170971246653>', description="Finish the campaign without completing a single story mission."),
+        discord.SelectOption(label="Howd That Get in There", emoji='<:Howd_That_Get_in_There:1174349173764665466>', description="Add a card without the printed flora trait to Hy’s soup."),
+        discord.SelectOption(label='Long Flume', emoji='<:Log_Flume:1174349175169745018>', description="Travel from White Sky to Tumbledown in a single day."),
+        discord.SelectOption(label='No Stone Unturned', emoji='<:No_Stone_Unturned:1174349176654528603>', description="Have every path card in the deck in play at the same time."),
+        discord.SelectOption(label='Noodling', emoji='<:Noodling:1174349183344463952>', description="Catch a fish in the Black Mud."),
+        discord.SelectOption(label='People Person', emoji='<:People_Person:1174349187014471730>', description="Clear three or more humans with the same test."),
+        discord.SelectOption(label='Pro Gamer', emoji='<:Pro_Gamer:1174349188490854500>', description="Pet Oru 3R or more times during a single round."),
+        discord.SelectOption(label='Shes A Natural', emoji='<:Shes_A_Natural:1174349191435264111>', description="Have Quisi cause a Cloudhive swarm to be discarded."),
+        discord.SelectOption(label='Ship of Theseus', emoji='<:Ship_of_Theseus:1174349534701309982>', description="Replace every card in your deck with a reward card."),
+        discord.SelectOption(label='The Pentaverate', emoji='<:The_Pentaverate:1174349537700220978>', description="Have five humans within reach of one Ranger at the same time."),
+        discord.SelectOption(label='Unlimited Power', emoji='<:Unlimited_Power:1174349540267151483>', description="Have 7 or more energy in a single aspect."),
+        discord.SelectOption(label='Unplanned Reunion', emoji='<:Unplanned_Reunion:1174349545304494151>', description="Have Dace and Aell in play at the same time.")
         ],
         custom_id="1"
         )
@@ -141,14 +146,14 @@ class MySelectView(discord.ui.View):
                     data[str(author_id)].update({str(select.values[0]): True})
                     json.dump(data, f, indent=4)
                 values = ", ".join(select.values)
-                msg = await interaction.followup.send(f'{interaction.user.mention} has obtained the **{values}** badges!')
+                msg = await interaction.followup.send(f'{interaction.user.mention} has obtained the **{values}** badge!')
         else:
             with open(data_file_path, 'w') as f:    
                 # Add the user to the data and save it
                 data[author_id] = { "name": author,
                                     str(select.values[0]): True}
                 json.dump(data, f, indent=4)
-            msg = await interaction.followup.send(f'{interaction.user.mention} has obtained their first badge: {select.values[0]}!')
+            msg = await interaction.followup.send(f'{interaction.user.mention} has obtained their first badge: **{select.values[0]}**!')
 
 class DeleteView(discord.ui.View):
     def __init__(self):
@@ -158,20 +163,20 @@ class DeleteView(discord.ui.View):
         options=[
         discord.SelectOption(label='All Out Of Options', emoji='<:All_Out_Of_Options:1174349162112888882>', description="Have only four cards remaining in the challenge deck."),
         discord.SelectOption(label='Big Tech', emoji='<:Big_Tech:1174349163627032636>', description="Discard a gear with 10 or more tokens on it using Moment of Desperation."),
-        discord.SelectOption(label='Electric Slide', emoji='<:Electric_Slide:1174349165799682048>', description="Discard"),
-        discord.SelectOption(label='Enough Already', emoji='<:Enough_Already:1174349167364157532>', description="Discard"),
-        discord.SelectOption(label='Hard Pass', emoji='<:Hard_Pass:1174349170971246653>', description="Discard"),
-        discord.SelectOption(label="Howd That Get in There", emoji='<:Howd_That_Get_in_There:1174349173764665466>', description="Discard"),
-        discord.SelectOption(label='Long Flume', emoji='<:Log_Flume:1174349175169745018>', description="Discard"),
-        discord.SelectOption(label='No Stone Unturned', emoji='<:No_Stone_Unturned:1174349176654528603>', description="Discard"),
-        discord.SelectOption(label='Noodling', emoji='<:Noodling:1174349183344463952>', description="Discard"),
-        discord.SelectOption(label='People Person', emoji='<:People_Person:1174349187014471730>', description="Discard"),
-        discord.SelectOption(label='Pro Gamer', emoji='<:Pro_Gamer:1174349188490854500>', description="Discard"),
-        discord.SelectOption(label='Shes A Natural', emoji='<:Shes_A_Natural:1174349191435264111>', description="Discard"),
-        discord.SelectOption(label='Ship of Theseus', emoji='<:Ship_of_Theseus:1174349534701309982>', description="Discard"),
-        discord.SelectOption(label='The Pentaverate', emoji='<:The_Pentaverate:1174349537700220978>', description="Discard"),
-        discord.SelectOption(label='Unlimited Power', emoji='<:Unlimited_Power:1174349540267151483>', description="Discard"),
-        discord.SelectOption(label='Unplanned Reunion', emoji='<:Unplanned_Reunion:1174349545304494151>', description="Discard")
+        discord.SelectOption(label='Electric Slide', emoji='<:Electric_Slide:1174349165799682048>', description="Complete the campaign using the Electric Fog weather every day."),
+        discord.SelectOption(label='Enough Already', emoji='<:Enough_Already:1174349167364157532>', description="Play the same moment 10 times in one day."),
+        discord.SelectOption(label='Hard Pass', emoji='<:Hard_Pass:1174349170971246653>', description="Finish the campaign without completing a single story mission."),
+        discord.SelectOption(label="Howd That Get in There", emoji='<:Howd_That_Get_in_There:1174349173764665466>', description="Add a card without the printed flora trait to Hy’s soup."),
+        discord.SelectOption(label='Long Flume', emoji='<:Log_Flume:1174349175169745018>', description="Travel from White Sky to Tumbledown in a single day."),
+        discord.SelectOption(label='No Stone Unturned', emoji='<:No_Stone_Unturned:1174349176654528603>', description="Have every path card in the deck in play at the same time."),
+        discord.SelectOption(label='Noodling', emoji='<:Noodling:1174349183344463952>', description="Catch a fish in the Black Mud."),
+        discord.SelectOption(label='People Person', emoji='<:People_Person:1174349187014471730>', description="Clear three or more humans with the same test."),
+        discord.SelectOption(label='Pro Gamer', emoji='<:Pro_Gamer:1174349188490854500>', description="Pet Oru 3R or more times during a single round."),
+        discord.SelectOption(label='Shes A Natural', emoji='<:Shes_A_Natural:1174349191435264111>', description="Have Quisi cause a Cloudhive swarm to be discarded."),
+        discord.SelectOption(label='Ship of Theseus', emoji='<:Ship_of_Theseus:1174349534701309982>', description="Replace every card in your deck with a reward card."),
+        discord.SelectOption(label='The Pentaverate', emoji='<:The_Pentaverate:1174349537700220978>', description="Have five humans within reach of one Ranger at the same time."),
+        discord.SelectOption(label='Unlimited Power', emoji='<:Unlimited_Power:1174349540267151483>', description="Have 7 or more energy in a single aspect."),
+        discord.SelectOption(label='Unplanned Reunion', emoji='<:Unplanned_Reunion:1174349545304494151>', description="Have Dace and Aell in play at the same time.")
         ],
         custom_id="2"
         )
@@ -199,8 +204,8 @@ class DeleteView(discord.ui.View):
 
 
 
-@client.tree.command(name="grab_badges", description = "Get badges for your achievements!")
-async def grab_badges(interaction: discord.Interaction):
+@client.tree.command(name="grab_badge", description = "Get badges for your achievements!")
+async def grab_badge(interaction: discord.Interaction):
     view = MySelectView()
     await interaction.response.send_message(view=view)
 
@@ -217,19 +222,19 @@ async def my_badges(interaction: discord.Interaction):
         data = json.load(f)
     if str(author_id) in list(data):        
         embed0 = discord.Embed(title=f"{interaction.user.name} has obtained {len(list(data[str(author_id)])) - 1}/16!", description="Here are all your obtained badges!")
-        for i in range(4):
+        for badge_list in badge_list_of_list:
             embeds = []
-            for badge in (globals()[f'badge_list{i}']):
+            for badge in badge_list:#(globals()[f'badge_list{i}']):
                 if str(badge) in list(data[str(author_id)]):
-                    single_badge_list = badge.split()
-                    b_a_d_g_e = "_".join(single_badge_list)
+                    single_badge = badge.split()
+                    b_a_d_g_e = "_".join(single_badge)
                     embed = discord.Embed(url = 'https://github.com/filippopence/dragncards-ebr-plugin/wiki').set_image(url= f'https://earthborne-rangers.s3.eu-west-3.amazonaws.com/background-and-tokens/badges/{b_a_d_g_e}.png')
                 else:
-                    single_badge_list = badge.split()
-                    b_a_d_g_e = "_".join(single_badge_list)
+                    single_badge = badge.split()
+                    b_a_d_g_e = "_".join(single_badge)
                     embed = discord.Embed(url = 'https://github.com/filippopence/dragncards-ebr-plugin/wiki').set_image(url= f'https://earthborne-rangers.s3.eu-west-3.amazonaws.com/background-and-tokens/badges/{b_a_d_g_e}_b&w.png')
                 embeds.append(embed)
-            if i == 0:
+            if badge_list_of_list.index(badge_list) == 0:
                 await interaction.response.send_message(embeds=[embed0] + embeds)
             else:
                 await interaction.followup.send(embeds=embeds)
@@ -700,6 +705,6 @@ async def on_ready():
 
 
 load_dotenv(find_dotenv())
-client.run(os.getenv('TOKEN'))
+client.run(os.getenv('TESTER_BOT'))
 
 
