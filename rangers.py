@@ -700,6 +700,6 @@ async def on_ready():
 
 
 load_dotenv(find_dotenv())
-client.run("os.getenv('TESTER_BOT'))
+client.run(os.getenv('TOKEN'))
 
 
