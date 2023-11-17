@@ -7,8 +7,16 @@ import os
 from dotenv import load_dotenv, find_dotenv
 import datetime
 import time
+import asyncio
 
-client = commands.Bot(command_prefix = '!', intents = discord.Intents.all())
+class PersistentViewBot(commands.Bot):
+    def __init__(self):
+        intents = discord.Intents().all()
+        super().__init__(command_prefix = commands.when_mentioned_or('!'), intents = discord.Intents.all())
+    async def setup_hook(self) -> None:
+        self.add_view(MySelectView())
+
+client = PersistentViewBot()
 
 
 with open("Cards_it.json", "r", encoding="utf8") as f:
@@ -58,6 +66,188 @@ dict = {"<b>": "**",  # define desired replacements here
     "white_large_square": "<:white_large_square:1082277091472588950>",
     "white_square_button": "<:white_square_button:1082277094274371594>",
     } 
+
+
+
+
+
+# File path for storing user information
+data_file_path = 'users_badges.json'
+
+# Check if the file exists, if not, create an empty file
+if not os.path.exists(data_file_path):
+    with open(data_file_path, 'w') as f:
+        json.dump({}, f)
+
+badge_list0 = ['All Out Of Options',
+              'Big Tech',
+              'Electric Slide',
+              'Enough Already']
+badge_list1 = ['Hard Pass',
+              "Howd That Get in There",
+              'Long Flume',
+              'No Stone Unturned']
+badge_list2 = ['Noodling',
+              'People Person',
+              'Pro Gamer',
+              'Shes A Natural']
+badge_list3 = ['Ship of Theseus',
+              'The Pentaverate',
+              'Unlimited Power',
+              'Unplanned Reunion']
+
+class MySelectView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+    @discord.ui.select(
+        placeholder="Choose a badge to grab!",
+        options=[
+        discord.SelectOption(label='All Out Of Options', emoji='<:All_Out_Of_Options:1174349162112888882>', description="Have only four cards remaining in the challenge deck."),
+        discord.SelectOption(label='Big Tech', emoji='<:Big_Tech:1174349163627032636>', description="Discard a gear with 10 or more tokens on it using Moment of Desperation."),
+        discord.SelectOption(label='Electric Slide', emoji='<:Electric_Slide:1174349165799682048>', description="Discard"),
+        discord.SelectOption(label='Enough Already', emoji='<:Enough_Already:1174349167364157532>', description="Discard"),
+        discord.SelectOption(label='Hard Pass', emoji='<:Hard_Pass:1174349170971246653>', description="Discard"),
+        discord.SelectOption(label="Howd That Get in There", emoji='<:Howd_That_Get_in_There:1174349173764665466>', description="Discard"),
+        discord.SelectOption(label='Long Flume', emoji='<:Log_Flume:1174349175169745018>', description="Discard"),
+        discord.SelectOption(label='No Stone Unturned', emoji='<:No_Stone_Unturned:1174349176654528603>', description="Discard"),
+        discord.SelectOption(label='Noodling', emoji='<:Noodling:1174349183344463952>', description="Discard"),
+        discord.SelectOption(label='People Person', emoji='<:People_Person:1174349187014471730>', description="Discard"),
+        discord.SelectOption(label='Pro Gamer', emoji='<:Pro_Gamer:1174349188490854500>', description="Discard"),
+        discord.SelectOption(label='Shes A Natural', emoji='<:Shes_A_Natural:1174349191435264111>', description="Discard"),
+        discord.SelectOption(label='Ship of Theseus', emoji='<:Ship_of_Theseus:1174349534701309982>', description="Discard"),
+        discord.SelectOption(label='The Pentaverate', emoji='<:The_Pentaverate:1174349537700220978>', description="Discard"),
+        discord.SelectOption(label='Unlimited Power', emoji='<:Unlimited_Power:1174349540267151483>', description="Discard"),
+        discord.SelectOption(label='Unplanned Reunion', emoji='<:Unplanned_Reunion:1174349545304494151>', description="Discard")
+        ],
+        custom_id="1"
+        )
+    async def select_callback(self, interaction, select):
+        select.disabled=True
+        await interaction.response.edit_message(view=self)
+        
+        author = interaction.user.name
+        author_id = interaction.user.id
+
+        # Load existing data from the file
+        with open(data_file_path, 'r') as f:
+            data = json.load(f)
+
+        if str(author_id) in list(data):
+            if str(select.values[0]) in list(data[str(author_id)]):
+                msg = await interaction.followup.send(f'Hey {interaction.user.mention}, you already have this badge!')
+            else:                
+                with open(data_file_path, 'w') as f:    
+                    # Add the user to the data and save it
+                    data[str(author_id)].update({str(select.values[0]): True})
+                    json.dump(data, f, indent=4)
+                values = ", ".join(select.values)
+                msg = await interaction.followup.send(f'{interaction.user.mention} has obtained the **{values}** badges!')
+        else:
+            with open(data_file_path, 'w') as f:    
+                # Add the user to the data and save it
+                data[author_id] = { "name": author,
+                                    str(select.values[0]): True}
+                json.dump(data, f, indent=4)
+            msg = await interaction.followup.send(f'{interaction.user.mention} has obtained their first badge: {select.values[0]}!')
+
+class DeleteView(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None)
+    @discord.ui.select(
+        placeholder="Choose a badge to drop!",
+        options=[
+        discord.SelectOption(label='All Out Of Options', emoji='<:All_Out_Of_Options:1174349162112888882>', description="Have only four cards remaining in the challenge deck."),
+        discord.SelectOption(label='Big Tech', emoji='<:Big_Tech:1174349163627032636>', description="Discard a gear with 10 or more tokens on it using Moment of Desperation."),
+        discord.SelectOption(label='Electric Slide', emoji='<:Electric_Slide:1174349165799682048>', description="Discard"),
+        discord.SelectOption(label='Enough Already', emoji='<:Enough_Already:1174349167364157532>', description="Discard"),
+        discord.SelectOption(label='Hard Pass', emoji='<:Hard_Pass:1174349170971246653>', description="Discard"),
+        discord.SelectOption(label="Howd That Get in There", emoji='<:Howd_That_Get_in_There:1174349173764665466>', description="Discard"),
+        discord.SelectOption(label='Long Flume', emoji='<:Log_Flume:1174349175169745018>', description="Discard"),
+        discord.SelectOption(label='No Stone Unturned', emoji='<:No_Stone_Unturned:1174349176654528603>', description="Discard"),
+        discord.SelectOption(label='Noodling', emoji='<:Noodling:1174349183344463952>', description="Discard"),
+        discord.SelectOption(label='People Person', emoji='<:People_Person:1174349187014471730>', description="Discard"),
+        discord.SelectOption(label='Pro Gamer', emoji='<:Pro_Gamer:1174349188490854500>', description="Discard"),
+        discord.SelectOption(label='Shes A Natural', emoji='<:Shes_A_Natural:1174349191435264111>', description="Discard"),
+        discord.SelectOption(label='Ship of Theseus', emoji='<:Ship_of_Theseus:1174349534701309982>', description="Discard"),
+        discord.SelectOption(label='The Pentaverate', emoji='<:The_Pentaverate:1174349537700220978>', description="Discard"),
+        discord.SelectOption(label='Unlimited Power', emoji='<:Unlimited_Power:1174349540267151483>', description="Discard"),
+        discord.SelectOption(label='Unplanned Reunion', emoji='<:Unplanned_Reunion:1174349545304494151>', description="Discard")
+        ],
+        custom_id="2"
+        )
+    async def select_callback(self, interaction, select):
+        select.disabled=True
+        await interaction.response.edit_message(view=self)
+        
+        author = interaction.user.name
+        author_id = interaction.user.id
+
+        # Load existing data from the file
+        with open(data_file_path, 'r') as f:
+            data = json.load(f)
+
+        if str(author_id) in list(data):
+            if str(select.values[0]) in list(data[str(author_id)]):
+                with open(data_file_path, 'w') as f: 
+                    data[str(author_id)].pop(str(select.values[0]))
+                    json.dump(data, f, indent=4)
+                msg = await interaction.followup.send(f'{interaction.user.mention} dropped **{select.values[0]}**.')
+            else:                
+                msg = await interaction.followup.send(f"Hey {interaction.user.mention}, you still don't have this badge!")
+        else:
+            await interaction.followup.send("You haven't obtained a badge yet!\nGo and explore The Valley to get your first badge or use the `/badges` command to grab one.")   
+
+
+
+@client.tree.command(name="grab_badges", description = "Get badges for your achievements!")
+async def grab_badges(interaction: discord.Interaction):
+    view = MySelectView()
+    await interaction.response.send_message(view=view)
+
+@client.tree.command(name="drop_badge", description = "Did you grab the wrong badge? Drop it!")
+async def drop_badge(interaction: discord.Interaction):
+    view = DeleteView()
+    await interaction.response.send_message(view=view)
+
+@client.tree.command(name="my_badges", description = "Flex your badges!")
+async def my_badges(interaction: discord.Interaction):
+    author_id = interaction.user.id
+    # Load existing data from the file
+    with open(data_file_path, 'r') as f:
+        data = json.load(f)
+    if str(author_id) in list(data):        
+        embed0 = discord.Embed(title=f"{interaction.user.name} has obtained {len(list(data[str(author_id)])) - 1}/16!", description="Here are all your obtained badges!")
+        for i in range(4):
+            embeds = []
+            for badge in (globals()[f'badge_list{i}']):
+                if str(badge) in list(data[str(author_id)]):
+                    single_badge_list = badge.split()
+                    b_a_d_g_e = "_".join(single_badge_list)
+                    embed = discord.Embed(url = 'https://github.com/filippopence/dragncards-ebr-plugin/wiki').set_image(url= f'https://earthborne-rangers.s3.eu-west-3.amazonaws.com/background-and-tokens/badges/{b_a_d_g_e}.png')
+                else:
+                    single_badge_list = badge.split()
+                    b_a_d_g_e = "_".join(single_badge_list)
+                    embed = discord.Embed(url = 'https://github.com/filippopence/dragncards-ebr-plugin/wiki').set_image(url= f'https://earthborne-rangers.s3.eu-west-3.amazonaws.com/background-and-tokens/badges/{b_a_d_g_e}_b&w.png')
+                embeds.append(embed)
+            if i == 0:
+                await interaction.response.send_message(embeds=[embed0] + embeds)
+            else:
+                await interaction.followup.send(embeds=embeds)
+    else:
+        await interaction.response.send_message("You haven't obtained a badge yet!\nGo and explore The Valley to get your first badge or use the `/badges` command to grab one.")   
+       
+
+
+
+
+
+
+
+
+
+
+### COMMANDS
+
 
 # GUESS
 @client.command()
@@ -125,7 +315,7 @@ async def erguess(ctx):
         test_icon = test_icon.replace("'", '')
         embed.add_field(name= "Test icons", value= test_icon)
         embed.add_field(name = "Text", value = replace_all(data[i]['text'], dict_guess))
-        embed.add_field(name = "Flavor", value = f"_{data[i]['flavor']}_")
+        embed.add_field(name = "Flavor", value = data[i]['flavor'])
         embed.add_field(name = "Box", value = data[i]['pack_name'])
         embed.add_field(name = "Set", value = f"{data[i]['set']} - {data[i]['position']}")
         embed.add_field(name= "Attribute requirement", value= f"{data[i]['sphere_cost']} **{data[i]['sphere_name']}**")
@@ -476,9 +666,6 @@ async def card_of_the_day():
         await card.add_reaction(emoji)
     await card.pin()
 
-@client.event
-async def on_ready():
-    card_of_the_day.start()
 
 # .day command
 @client.command()
@@ -498,7 +685,21 @@ async def erday(ctx):
         await card.add_reaction(emoji)
     await card.pin()
 
+
+
+
+@client.event
+async def on_ready():
+    card_of_the_day.start()
+    print("Bot is Up and Ready!")
+    try:
+        synced = await client.tree.sync()
+        print(f"Synced {len(synced)} command(s).")
+    except Exception as e:
+        print("Warning: commands not synced!")
+
+
 load_dotenv(find_dotenv())
-client.run(os.getenv('TOKEN'))
+client.run("os.getenv('TESTER_BOT'))
 
 
