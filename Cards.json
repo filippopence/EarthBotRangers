@@ -1354,7 +1354,7 @@
         "presence": "",
         "progress_threshold": 0,
         "harm_threshold": 0,
-        "text": "Search the path deck and discard for a flora and put it into play with this skill attached.\nIncrease the attached flora\u2019s [herm] threshold by 2.",
+        "text": "Search the path deck and discard for a flora and put it into play with this skill attached.\nIncrease the attached flora\u2019s [harm] threshold by 2.",
         "flavor": "",
         "is_unique": false,
         "cost": "1",

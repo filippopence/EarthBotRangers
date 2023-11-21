@@ -267,6 +267,37 @@ async def my_badges(interaction: discord.Interaction):
     else:
         await interaction.response.send_message("You haven't obtained a badge yet!\nGo and explore The Valley to get your first badge or use the `/badges` command to grab one.")   
 
+@client.tree.command(name="my_badges_two", description = "Flex your badges!")
+async def my_badges_two(interaction: discord.Interaction):
+    author_id = interaction.user.id
+    BADGES_CHANNEL_ID = 1082647909364924526
+    badges_channel = await interaction.guild.fetch_channel(BADGES_CHANNEL_ID)
+    # Load existing data from the file
+    with open(data_file_path, 'r') as f:
+        data = json.load(f)
+    if str(author_id) in list(data):        
+        embed0 = discord.Embed(title=f"{interaction.user.name} has obtained {len(list(data[str(author_id)])) - 1}/16!", description="Here are all your obtained badges!")
+        for badge_list in badge_list_of_list:
+            embeds = []
+            for badge in badge_list:#(globals()[f'badge_list{i}']):
+                if str(badge) in list(data[str(author_id)]):
+                    single_badge = badge.split()
+                    b_a_d_g_e = "_".join(single_badge)
+                    embed = discord.Embed(url = 'https://github.com/filippopence/dragncards-ebr-plugin/wiki').set_image(url= f'https://earthborne-rangers.s3.eu-west-3.amazonaws.com/background-and-tokens/badges/{b_a_d_g_e}.png')
+                else:
+                    single_badge = badge.split()
+                    b_a_d_g_e = "_".join(single_badge)
+                    embed = discord.Embed(url = 'https://github.com/filippopence/dragncards-ebr-plugin/wiki').set_image(url= f'https://earthborne-rangers.s3.eu-west-3.amazonaws.com/background-and-tokens/badges/{b_a_d_g_e}_b&w.png')
+                embeds.append(embed)
+            if badge_list_of_list.index(badge_list) == 0:
+                await badges_channel.send(embeds=[embed0] + embeds)
+            else:
+                await badges_channel.send(embeds=embeds)
+    else:
+        await badges_channel.send("You haven't obtained a badge yet!\nGo and explore The Valley to get your first badge or use the `/badges` command to grab one.")   
+         
+
+
 
 # GUESSING GAME
 @client.tree.command(name="erguess", description= "Guessing game including only basic cards.")
@@ -522,7 +553,7 @@ async def erimg(interaction: discord.Interaction, card_name: str):
         for ids in range(max):
             sphere = replace_all(CardList[CardIndexes[int(ids)]]['sphere_code'], dict)
             cards_found.append((f"{ids+1}. {sphere} **{CardList[CardIndexes[int(ids)]]['name']}**\n_{CardList[CardIndexes[int(ids)]]['type_name']}_ ({CardList[CardIndexes[int(ids)]]['pack_name']})"))
-        await interaction.response.send_message('\n'.join(cards_found))
+        await interaction.followup.send('\n'.join(cards_found))
         def check(m: discord.Message):
             return m.channel == interaction.channel #m.author == ctx.author and 
         for j in range(1):
@@ -530,13 +561,13 @@ async def erimg(interaction: discord.Interaction, card_name: str):
             id = id.content
             try:
                 if CardList[CardIndexes[int(id)-1]]['set'] == 'Reward':
-                    await interaction.response.send_message(f"|| {CardList[CardIndexes[int(id)-1]]['imagesrc']} ||")
+                    await interaction.followup.send(f"|| {CardList[CardIndexes[int(id)-1]]['imagesrc']} ||")
                 else:
-                    await interaction.response.send_message(CardList[CardIndexes[int(id)-1]]['imagesrc'])
+                    await interaction.followup.send(CardList[CardIndexes[int(id)-1]]['imagesrc'])
             except:
-                await interaction.response.send_message("You have to type the number of the card you want!")
+                await interaction.followup.send("You have to type the number of the card you want!")
             try:
-                await interaction.response.send_message(CardList[CardIndexes[int(id)-1]]['imagesrc2'])
+                await interaction.followup.send(CardList[CardIndexes[int(id)-1]]['imagesrc2'])
             except:
                 pass
 
