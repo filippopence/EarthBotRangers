@@ -65,8 +65,8 @@ dict = {"<b>": "**",  # define desired replacements here
     "focus": "<:focus:1081702483568623696>",
     "white_large_square": "<:white_large_square:1082277091472588950>",
     "white_square_button": "<:white_square_button:1082277094274371594>",
+    "role": "<:perranger:1082646522946138132>",
     } 
-
 
 badge_dict = {'All Out Of Options': '<:All_Out_Of_Options:1174349162112888882>', 
         'Big Tech': '<:Big_Tech:1174349163627032636>', 
