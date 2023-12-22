@@ -709,7 +709,7 @@ async def card_of_the_day():
         await message.unpin()
         print(f"Unpinned message content: {message.content}")
     i = random.randint(1,len(CardListDay))
-    await channel.send("**Card of the day!**")
+    await channel.send(f"**Card of the day: {CardListDay[i]['name']}**")
     card = await channel.send(CardListDay[i]['imagesrc'])
     emojis = ["\u0031\ufe0f\u20e3", '\u0032\ufe0f\u20e3', '\u0033\ufe0f\u20e3', '\u0034\ufe0f\u20e3', '\u0035\ufe0f\u20e3']
     time.sleep(0.5)
